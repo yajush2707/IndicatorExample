@@ -3,13 +3,54 @@ import pandas as pd
 import json
 import random
 
+def cs_detect_time_in_data(self): 
+  import pandas as pd
+  import datefinder 
+  import math
+  df=pd.read_csv("input.txt")
+
+  zeit = []
+  tage = []
+  monate = []
+  jahre = []
+  for i in df['Verwendungszweck']:
+      if isinstance(i,float):
+          zeit.append(float('nan'))
+          tage.append(float('nan'))
+          monate.append(float('nan'))
+          jahre.append(float('nan'))
+      else:
+          try:
+              str_time = list(datefinder.find_dates(i))
+              if len(str_time)>0:
+                  date = str_time[0]
+                  zeit.append(str(date.time()))
+                  tage.append(str(date.date()))
+                  monate.append(str(date.date())[0:7])
+                  jahre.append(str(date.date())[0:4])
+              else:
+                  zeit.append(float('nan'))
+                  tage.append(float('nan'))
+                  monate.append(float('nan'))
+                  jahre.append(float('nan'))
+          except:
+              zeit.append(float('nan'))
+              tage.append(float('nan'))
+              monate.append(float('nan'))
+              jahre.append(float('nan'))
+  df['Uhrzeit'] = zeit
+  df['Tage'] = tage
+  df['Jahre'] = jahre
+  df['Monate'] = monate
+  return df
+
 def cs_engines_purpow_compute(a ='input.txt'):
   from base64 import b64decode
   import random
   from io import StringIO
   import pandas as pd
   f = open("input.txt", "r")
-  print(f.read())
+  #print(f.read())
   ### income ###
     
   df=pd.read_csv("input.txt")
@@ -70,7 +111,7 @@ def cs_engines_purpow_compute(a ='input.txt'):
         }
   return purpow
 
-cs_engines_purpow_compute()
+#cs_engines_purpow_compute()
   
 def cs_engines_technic_compute(a='input.txt'):
   from base64 import b64decode 
@@ -106,7 +147,7 @@ def cs_engines_technic_compute(a='input.txt'):
           }
       }
 
-cs_engines_technic_compute()
+#cs_engines_technic_compute()
 
 
 def cs_engine_pet(a='input.txt'):
@@ -116,7 +157,7 @@ def cs_engine_pet(a='input.txt'):
   import pandas as pd 
   f = open("input.txt", "r")
   df = pd.read_csv("input.txt")
-  #df = cs_detect_time_in_data(df)
+  df = cs_detect_time_in_data(df)
 
   amount_pet = len(df[df["Pet"]==1].groupby(["Jahre","Monate"]))
 
@@ -148,7 +189,7 @@ def cs_engine_hedonism(a='input.txt'):
   
   f = open("input.txt", "r")
   df = pd.read_csv("input.txt")
-  #df = cs_detect_time_in_data(df)
+  df = cs_detect_time_in_data(df)
   
   #### Bargeld Filter muss noch hinzugefuegt werden. ####
   payment_method = df[df['Umsatzart']=='Kartenzahlung/-abrechnung']
@@ -198,7 +239,7 @@ def cs_engine_bummel(a='input.txt'):
   
   f = open("input.txt", "r")
   df = pd.read_csv("input.txt")
-  #df = cs_detect_time_in_data(df)
+  df = cs_detect_time_in_data(df)
 
   payment_method = df[df['Umsatzart']=='Kartenzahlung/-abrechnung']
   times_grouped_by_day = payment_method.groupby('Tage')['Uhrzeit'].apply(list)
@@ -255,7 +296,7 @@ def cs_engines_debt(a='input.txt'):
           "property":"indebtedness"
           }
       }
-cs_engines_debt()
+#cs_engines_debt()
 
 
 
@@ -269,7 +310,7 @@ def cs_engines_busy(a='input.txt'):
   df = pd.read_csv("input.txt")
 
   amount_of_all_transactions = len(df)
-  #df = cs_detect_time_in_data(df)
+  df = cs_detect_time_in_data(df)
 
   payment_method = df[df['Umsatzart']=='Kartenzahlung/-abrechnung']
   times_grouped_by_day = payment_method.groupby('Tage')['Uhrzeit'].apply(list)
@@ -312,7 +353,7 @@ def cs_engines_impulsivity(a='input.txt'):
   f = open("input.txt", "r")
   df = pd.read_csv("input.txt")
 
-  #df = cs_detect_time_in_data(df)
+  df = cs_detect_time_in_data(df)
 
   impulsive_expenses = df[(df['Technic']== 1) | (df['Luxury']==1) ]
   purpow = cs_engines_purpow_compute()
@@ -339,4 +380,13 @@ def cs_engines_impulsivity(a='input.txt'):
           "property":"impulsivity"
           }
       }
+
+
+#cs_engines_purpow_compute()
+#cs_engines_technic_compute()
+#cs_engine_pet()
+#cs_engine_hedonism()
+#cs_engine_bummel()
+#cs_engines_debt()
+#cs_engines_busy()
 #cs_engines_impulsivity()
